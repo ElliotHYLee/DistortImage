@@ -14,20 +14,31 @@ def getPath(dsName = 'AirSim', seq = 0, subType='mr'):
         path += '/'
     return path
 
-def getImgNames(path, dsName='AirSim', ts=None):
+def getImgNames(path, dsName='AirSim', ts=None, subType=None):
     dsName = dsName.lower()
     imgNames = []
     if dsName == 'airsim':
-        for i in range(0, ts.shape[0]):
-            imgNames.append(path + 'images/img_' + str(ts[i]) + '.png')
+        if subType == 'mr':
+            for i in range(0, ts.shape[0]):
+                imgNames.append(path + 'images/img_' + str(ts[i]) + '.png')
+        elif subType == 'bar':
+            for i in range(0, ts.shape[0]):
+                imgNames.append(path + 'images_bar/img_' + str(ts[i]) + '.png')
+        elif subType == 'pin':
+            for i in range(0, ts.shape[0]):
+                imgNames.append(path + 'images_pin/img_' + str(ts[i]) + '.png')
     elif dsName =='euroc':
         imgNames = (pd.read_csv(path + 'fName.txt', sep=' ', header=None)).iloc[:, 0]
         for i in range(0, len(imgNames)):
             imgNames[i] = path + 'cam0/data/' + imgNames[i]
     elif dsName =='kitti':
         imgNames = (pd.read_csv(path + 'fNames.txt', sep=' ', header=None)).iloc[:, 0]
-        for i in range(0, len(imgNames)):
-            imgNames[i] = path + 'image_2/' + imgNames[i]
+        if subType is None:
+            for i in range(0, len(imgNames)):
+                imgNames[i] = path + 'image_2/' + imgNames[i]
+        elif subType == 'barrel':
+            for i in range(0, len(imgNames)):
+                imgNames[i] = path + 'image_2/barrel' + imgNames[i]
     return imgNames
 
 def getEnd(start, N, totalN):
